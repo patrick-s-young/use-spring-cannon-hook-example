@@ -1,7 +1,13 @@
-// React Three
+// react three
 import { Canvas } from "@react-three/fiber";
+// physics
 import { Physics, Debug } from '@react-three/cannon';
+// navigation
 import { OrbitControls } from '@react-three/drei';
+// ui for useSpring values
+import { useControls } from 'leva';
+// zustand state management
+import { useStore } from './store';
 // components
 import { Ground } from './Ground'; 
 import { Robot } from './Robot'; 
@@ -9,6 +15,30 @@ import { Robot } from './Robot';
 import "./styles.css";
 
 export default function App() {
+  const { setDamping, setRestLength, setStiffness } = useStore((state) => state);
+  const data = useControls({ 
+    damping: {
+      value: 1,
+      min: 0,
+      max: 20,
+      step: .5,
+      onChange: setDamping
+    },
+    restLength: {
+      value: .5,
+      min: 0,
+      max: 2,
+      step: .1,
+      onChange: setRestLength
+    }, 
+    stiffness: {
+      value: 100,
+      min: 0,
+      max: 200,
+      step: 1,
+      onChange: setStiffness
+    }
+  })
   return (
     <div className="App">
       <Canvas camera={{ fov: 55, position: [0, 0.95, 8] }}>

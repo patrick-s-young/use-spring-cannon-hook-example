@@ -18,14 +18,14 @@ export const Ground = () => {
 
   return (
       <group ref={floorRef}>
-        {compoundShapes.map(({type, args, position, color}) => {
+        {compoundShapes.map(({type, args, position, color, key}) => {
           return type === 'Cylinder' ? 
-            <mesh position={position} >
+            <mesh position={position} key={key}>
               <cylinderGeometry args={args}/>
               <meshStandardMaterial color={color} />
             </mesh>
             :
-            <mesh position={position} >
+            <mesh position={position} key={key}>
               <sphereGeometry args={args}/>
               <meshStandardMaterial color={color} />
             </mesh> })
