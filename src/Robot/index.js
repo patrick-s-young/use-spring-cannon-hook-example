@@ -1,13 +1,13 @@
+// react
 import { useRef } from "react";
+// cannon hooks
 import { useSphere, useSpring } from '@react-three/cannon';
+// zustand
+import { useStore } from '../store';
 
 export const Robot = () => {
-  // spring connecting robot's head to its torso
-  const [headSpring, torsoSpring] = useSpring(useRef(null), useRef(null), {
-    damping: 1,
-    restLength: .5,
-    stiffness: 100,
-  })
+  // useSpring values
+  const { damping, restLength, stiffness } = useStore(state => state);
 
   // robot head
   const [headRef] = useSphere(() => ({ 
@@ -16,17 +16,24 @@ export const Robot = () => {
     position: [0, 3, 4.5],
     linearFactor: [0, 1, 0],
     angularFactor: [0, 1, 0]
-  }), headSpring)
+  }), useRef(null))
 
   // robot torso
   const [torsoRef] = useSphere(() => ({
     args: [.25],
     position: [0, 1.5, 4.5],
     mass: 1,
-    linearFactor: [0, 1, 0],
-  }), torsoSpring);
+    linearFactor: [0, 1, 0]
+  }), useRef(null));
 
-  // robot feet
+  // spring connecting robot's head to its torso
+  const [headSpring, torsoSpring] = useSpring(headRef, torsoRef, {
+    damping,
+    restLength,
+    stiffness,
+  }, [damping, restLength, stiffness]);
+
+  // robot 'feet'
   const [feefRef] = useSphere(() => ({
     args: [.40],
     position: [0, .5, 4.5],
@@ -36,11 +43,11 @@ export const Robot = () => {
 
   return (
     <>
-      <mesh ref={headRef}>
+      <mesh ref={headSpring}>
         <sphereBufferGeometry args={[0.125]} />
         <meshNormalMaterial />
       </mesh>
-      <mesh ref={torsoRef}>
+      <mesh ref={torsoSpring}>
       <sphereBufferGeometry args={[0.25]} />
         <meshNormalMaterial />
       </mesh>
